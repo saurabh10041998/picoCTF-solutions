@@ -69,8 +69,7 @@ int buy_stonks(Portfolio *p) {
 		printf("Flag file not found. Contact an admin.\n");
 		exit(1);
 	}
-	fgets(api_buf, FLAG_BUFFER, f);
-
+	fgets(api_buf, FLAG_BUFFER, f) ;    // FLAG_BUFFER = 128 bytes
 	int money = p->money;
 	int shares = 0;
 	Stonk *temp = NULL;
@@ -88,9 +87,18 @@ int buy_stonks(Portfolio *p) {
 
 	char *user_buf = malloc(300 + 1);
 	printf("What is your API token?\n");
-	scanf("%300s", user_buf);
+	scanf("%300s", user_buf);               // read not more than 300 bytes
 	printf("Buying stonks with token:\n");
-	printf(user_buf);
+	printf(user_buf);                       // here is format string vuln, we can leak stack
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+// [128].> stack
+// [300] .> heap but pointer is on stack pointer name --> user_buf
+// so we can leak stack 
+//
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 	// TODO: Actually use key to interact with API
 
