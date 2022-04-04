@@ -39,4 +39,17 @@ return value from malloc = start address of x byte
 - Otherwise, the heap manager will ask the kernel to add new memory to the end of the heap, and then allocates a new chunk from the newly allocated space.
 - Otherwise, allocation can't be serviced ,return NULL
 
+### Allocating from the free'd chunks
+- Heap manage keeps track of such freed chuncks in series of different link list called as `bins`
+- Allocation request --> search for bins for a chunk big enough to serve request
+- If found,remove the chunk from bin and mark it allocated
+- For performance reason, there are several types of bins
+```
+    1. fast bins
+    2. the unsorted bins
+    3. small bins
+    4. large bins
+    5. per thread t-cache
+```
+
 
