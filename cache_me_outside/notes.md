@@ -32,3 +32,11 @@ Request x byte --> metadata + x bytes + alignment byte
 return value from malloc = start address of x byte
 
 ### Chunk allocation : basic strategy.
+
+**For smaller chunks**
+- If there is previously freed chunk of memory, and that chunk is big enough to service the request, the heap manager will use that freed chunk for the new allocation..
+- Otherwise, if there is available space at top of the heap, the heap manager will allocate a new chunk out of that available space and use that.
+- Otherwise, the heap manager will ask the kernel to add new memory to the end of the heap, and then allocates a new chunk from the newly allocated space.
+- Otherwise, allocation can't be serviced ,return NULL
+
+
