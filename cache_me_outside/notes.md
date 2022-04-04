@@ -70,5 +70,11 @@ return value from malloc = start address of x byte
     2. shared library
     3. thread's stack region
 ```
-- At this point, heap manager will resort to attaching *non-contigious memory* to the initial program using calls to `mmap`
+- At this point, heap manager will resort to attaching **non-contigious memory** to the initial program using calls to `mmap`
 - if mmap fails, then malloc will return NULL
+
+### Off-heap allocations via mmap
+- Very large allocations requests gets special treatment from heap manager.
+- Large chunks allocated off heap using direct call to `mmap`. This fact is marked using flag in chunk metadata.
+- free(large allocations) --> heap manager releases entire mmaped region back to system via `munmap`.
+
