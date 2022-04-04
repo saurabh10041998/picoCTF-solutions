@@ -51,5 +51,10 @@ return value from malloc = start address of x byte
     4. large bins
     5. per thread t-cache
 ```
+### Allocation from the top of heap
+- If no chunk found to serve the request, the heap manager must constructor from the scratch
+- first lookup at end of the heap (sometimes called as "top chunk" or "remainder chunk") to see enough space is there
+- If there is, manufacture the chunk and allocate to process.
+
 
 
