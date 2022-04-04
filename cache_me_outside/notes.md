@@ -57,4 +57,18 @@ return value from malloc = start address of x byte
 - If there is, manufacture the chunk and allocate to process.
 
 
+### Asking the kernel for more memory at the top of the heap
+- Once free space from the top is used up, heap manager will have to ask kernel to add more memory at end of the heap
+- On initial heap, heap manager calls `sbrk` to allocate more memory
+- Internally uses `brk` system call. Quite confusing name. Original meaning `change the program break location`
+- syscall will allocate more memory at the end of the initial heap created by process
 
+- sbrk will fail when heap will eventually grow so large that expanding it further would collide with the other things in the process' address space.
+- Process address space include
+```
+    1. Memory mappings
+    2. shared library
+    3. thread's stack region
+```
+- At this point, heap manager will resort to attaching *non-contigious memory* to the initial program using calls to `mmap`
+- if mmap fails, then malloc will return NULL
