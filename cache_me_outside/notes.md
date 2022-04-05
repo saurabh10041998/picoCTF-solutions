@@ -78,3 +78,15 @@ return value from malloc = start address of x byte
 - Large chunks allocated off heap using direct call to `mmap`. This fact is marked using flag in chunk metadata.
 - free(large allocations) --> heap manager releases entire mmaped region back to system via `munmap`.
 
+## Arenas (I found this imp hence large..)
+- On multithreaded environment, heap manager have to defend its internal heap DS from race conditions.
+- Prior to ptmalloc2, this is accomplished using a global mutex before heap operation.
+- ptmalloc2 introduce concept of `arenas`.
+- **Arenas** --> an entirely different heap that manages its own chunk allocation and free bins completely seperately.
+- Each arenas still serializes access to its own internal data structure with a mutex, but threads can safely perform heap operations without stalling each other so long as they are interacting with different arenas.
+- "Initial" Arena is the only main heap that we have seen. This is primary arena for single threaded application.
+- As new threads join process, the heap manager allocates and attaches **secondary arena** to each new thread.
+- With each new thread joins the process, the heap manager tries to find the arena that no other thread is using and attaches the arenas to it.
+- Maximum number of arena creation = 2 * cpu core 32 bit processor / 8 * cpu core 64 bit processor.
+- Secondary arena do not work same as primary arena(i.e allocted when process is loaded into memory and expanded using brk syscall)
+- *Secondary arena emulate the behaviour of the main heap using one or more "subheaps" created using* `mmap` and `mprotect`
