@@ -93,7 +93,7 @@ return value from malloc = start address of x byte
 
 ## Subheaps
 - Sub heaps same working as main heaps but only difference is they are positioned into memory using `mmap` , and the heap manager emulates growing the subheap using mprotect
--When heap manager wants to create subheap
+- When heap manager wants to create subheap
 ```
 1. Asks kernel to reserve a region of memory that subheap can grow into by calling mmap.
 2. Reserving region does not allocate memory directly into the subheap.
@@ -101,3 +101,8 @@ return value from malloc = start address of x byte
 4. mmap asks for pages that are marked PROT_NONE, which acts as hint to the kernel that it only needs to reserve the address range for the region; it doesn't yet need the kernel attach memory to it.
 ```
 *By Default, the maximum size of a subheap -and therefore the region of memory reserved for the subheap to grow into is 1MB on 3 bit processes and 64MB on 64 bit processes*
+
+- Intial heap grow using sbrk --> the heap manager emulates growing of subheap into reseved address range by mannually calling `mprotect` to change pages in the region from **PROT_NONE** to **PROT_READ | PROT_WRITE** 
+- This causes kernel to to **attach** memory to address space --> subheap growing. The subheap grows until whole mmap region is full.
+- When entire subheap is exhausted then arena allocates another subheap.
+- This allows secondary arenas to grow indefinitely until process run out of memory.  
