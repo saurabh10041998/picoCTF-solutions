@@ -108,3 +108,26 @@ return value from malloc = start address of x byte
 - This causes kernel to to **attach** memory to address space --> subheap growing. The subheap grows until whole mmap region is full.
 - When entire subheap is exhausted then arena allocates another subheap.
 - This allows secondary arenas to grow indefinitely until process run out of memory.  
+
+### Chunk metadata
+- Single `size_t*` header positioned just behind user region given to programmer. This field, which source code calls `mchunk_size` is written during malloc and used by free to decide how to handle the release allocation.
+```
+    sizeof(size_t) = 4 byte .. 32 bit system
+                   = 8 byte .. 64 bit system
+```
+
+- Four pieces of information : chunk size, three bits called "A", "M" and "P".
+- "A" flag : Chunk belongs to secondary arena or to main heap. 
+```
+If A bit is set, the heap manager has to do search each arena and see if pointer lives within any of that arena's subheaps.
+If A bit is not set, the heap manager can short-cut the search beacause it knows chunk came from initial arena.
+```
+
+- "M" flag : chunk is hugh chunk and allocated off heap via mmap
+```
+ When M = 1 : It will return the allocated region to system by calling munmap during free()
+```
+- "P" flag : whether previous chunk is free chunk.
+```
+When P = 1: This means when this chunk is freed then it can join previous chunk to create large free chunk (coalesced).
+```
