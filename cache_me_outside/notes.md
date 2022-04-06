@@ -9,7 +9,9 @@
 ## Tutorial link:
 ```
 https://azeria-labs.com/heap-exploitation-part-1-understanding-the-glibc-heap-implementation/
+http://www.phrack.org/issues (Advanced articles..) 
 ```
+
 
 ### Why do people use heap ??
 - Mannually allocate the new region during program execution. This is done via `malloc`.
