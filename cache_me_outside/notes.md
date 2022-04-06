@@ -90,3 +90,14 @@ return value from malloc = start address of x byte
 - Maximum number of arena creation = 2 * cpu core 32 bit processor / 8 * cpu core 64 bit processor.
 - Secondary arena do not work same as primary arena(i.e allocted when process is loaded into memory and expanded using brk syscall)
 - *Secondary arena emulate the behaviour of the main heap using one or more "subheaps" created using* `mmap` and `mprotect`
+
+## Subheaps
+- Sub heaps same working as main heaps but only difference is they are positioned into memory using `mmap` , and the heap manager emulates growing the subheap using mprotect
+-When heap manager wants to create subheap
+```
+1. Asks kernel to reserve a region of memory that subheap can grow into by calling mmap.
+2. Reserving region does not allocate memory directly into the subheap.
+3. It asks the kernel to refrain from allocating things like thread stacks, mmap* regions and other allocations inside this region.
+4. mmap asks for pages that are marked PROT_NONE, which acts as hint to the kernel that it only needs to reserve the address range for the region; it doesn't yet need the kernel attach memory to it.
+```
+*By Default, the maximum size of a subheap -and therefore the region of memory reserved for the subheap to grow into is 1MB on 3 bit processes and 64MB on 64 bit processes*
