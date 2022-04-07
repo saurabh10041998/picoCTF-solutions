@@ -17,4 +17,13 @@ https://azeria-labs.com/heap-exploitation-part-2-glibc-heap-free-bins/
 ```
 Even with these checks, attackers can still exploit heap.
 
+## Free chunk metadata
+
+- We know about metadata(chunk size, "A" bit, "M" bit, "P" bit).
+- Free chunks stores above info too. (Except "M" bit beacause of nature of `munmap`)
+- Free chunks also store information after user data region using a technique called as **boundary tags**. 
+- Boundary tags carry size information  before and after the chunk. This allows bidirectional traversing.
+- free bins operate like linked list. This require chunk to store pointer to other chunks.
+- Since there is no "user data" in user region, heap manager repurposes this "user data" region in freed chunks as the place where this additional metadata lives.
+
 
