@@ -54,7 +54,7 @@ return value from malloc = start address of x byte
     5. per thread t-cache
 ```
 ### Allocation from the top of heap
-- If no chunk found to serve the request, the heap manager must constructor from the scratch
+- If no chunk found to serve the request, the heap manager must construct from the scratch
 - first lookup at end of the heap (sometimes called as "top chunk" or "remainder chunk") to see enough space is there
 - If there is, manufacture the chunk and allocate to process.
 
@@ -80,7 +80,7 @@ return value from malloc = start address of x byte
 - Large chunks allocated off heap using direct call to `mmap`. This fact is marked using flag in chunk metadata.
 - free(large allocations) --> heap manager releases entire mmaped region back to system via `munmap`.
 
-## Arenas (I found this imp hence large..)
+## Arenas (I found this important hence large font..)
 - On multithreaded environment, heap manager have to defend its internal heap DS from race conditions.
 - Prior to ptmalloc2, this is accomplished using a global mutex before heap operation.
 - ptmalloc2 introduce concept of `arenas`.
@@ -94,7 +94,7 @@ return value from malloc = start address of x byte
 - *Secondary arena emulate the behaviour of the main heap using one or more "subheaps" created using* `mmap` and `mprotect`
 
 ## Subheaps
-- Sub heaps same working as main heaps but only difference is they are positioned into memory using `mmap` , and the heap manager emulates growing the subheap using mprotect
+- Sub heaps same working as main heaps but only difference is they are positioned into memory using `mmap` , and the heap manager emulates growing the subheap using `mprotect`
 - When heap manager wants to create subheap
 ```
 1. Asks kernel to reserve a region of memory that subheap can grow into by calling mmap.
