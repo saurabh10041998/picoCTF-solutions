@@ -56,3 +56,17 @@ Even with these checks, attackers can still exploit heap.
 - **Each of them stores the chunks that are all same fixed size.**
 - Every chunk < 512 bytes(32 bit system) and < 1024 bytes on 64 bit system has corresponding small bins.
 - Automatically ordered and hence insertion and removal of the entries is incredibly fast.
+
+## Large bins
+- For chunk over 512/1024 bytes, the heap manager uses large bins
+- 63 large bins, operates the same as the small bins but instead of storing the fixed size,  **they instead store chunks within size range**.
+- Each large bin's range is designed not to overlap with either the chunks sizes of small bins or the ranges of the other bins. **In other words, given the chunk size, there is exactly one small bin or large bin that this size corresponds to**.
+- Insertion has to be mannually sorted and allocation from this list requires list traversal. Thus these are inherently slower than the small bins. However
+large bins are used less frequently in the program.
+- **Hypothesis** :- *programs tend to allocate(and thus release) small allocations at a far higher rate than large allocations on an average*
+- Henc large bin ranges are clustered towards smaller chunk sizes
+```
+Smallest large bins -> 64 bytes(512 byte to 576 bytes).
+Second largest -> 256Kb
+largest of large bin(1) -> freed chunks over  1Mb.
+``` 
