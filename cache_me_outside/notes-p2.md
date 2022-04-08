@@ -23,7 +23,7 @@ Even with these checks, attackers can still exploit heap.
 - Free chunks stores above info too. (Except "M" bit beacause of nature of `munmap`)
 - Free chunks also store information after user data region using a technique called as **boundary tags**. 
 - Boundary tags carry size information  before and after the chunk. This allows bidirectional traversing.
-- free bins operate like linked list. This require chunk to store pointer to other chunks.
+- Free bins operate like linked list. This require chunk to store pointer to other chunks.
 - Since there is no "user data" in user region, heap manager repurposes this "user data" region in freed chunks as the place where this additional metadata lives.
 
 ## Recycling memory with bins
@@ -55,7 +55,7 @@ Even with these checks, attackers can still exploit heap.
 - Small bins are easier to understand. Total - 62.
 - **Each of them stores the chunks that are all same fixed size.**
 - Every chunk < 512 bytes(32 bit system) and < 1024 bytes on 64 bit system has corresponding small bins.
-- Automatically ordered and hence insertion and removal of the entries is incredibly fast.
+- Automatically ordered and hence insertion and removal of the entries are incredibly fast.
 
 ## Large bins
 - For chunk over 512/1024 bytes, the heap manager uses large bins
@@ -64,7 +64,7 @@ Even with these checks, attackers can still exploit heap.
 - Insertion has to be mannually sorted and allocation from this list requires list traversal. Thus these are inherently slower than the small bins. However
 large bins are used less frequently in the program.
 - **Hypothesis** :- *programs tend to allocate(and thus release) small allocations at a far higher rate than large allocations on an average*
-- Henc large bin ranges are clustered towards smaller chunk sizes
+- Hence large bin ranges are clustered towards smaller chunk sizes
 ```
 Smallest large bins -> 64 bytes(512 byte to 576 bytes).
 Second largest -> 256Kb
