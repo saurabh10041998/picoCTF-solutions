@@ -50,3 +50,9 @@ Even with these checks, attackers can still exploit heap.
 4. If this potentially larger chunk borders the "top" of the heap, the whole chunk is absorbed into the end of the heap, rather than stored in a "bin".
 5. Otherwise, chunk is marked as free and placed in an appropriate bin.
 ```
+
+## Small bins
+- Small bins are easier to understand. Total - 62.
+- **Each of them stores the chunks that are all same fixed size.**
+- Every chunk < 512 bytes(32 bit system) and < 1024 bytes on 64 bit system has corresponding small bins.
+- Automatically ordered and hence insertion and removal of the entries is incredibly fast.
