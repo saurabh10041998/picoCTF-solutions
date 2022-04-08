@@ -26,4 +26,20 @@ Even with these checks, attackers can still exploit heap.
 - free bins operate like linked list. This require chunk to store pointer to other chunks.
 - Since there is no "user data" in user region, heap manager repurposes this "user data" region in freed chunks as the place where this additional metadata lives.
 
+## Recycling memory with bins
+- Heap manager needs to keep track of freed chunks so that malloc can reuse them during allocation request.
+- *Naive implmentation* : Using linked list for this. This will work but will make malloc slow.
+- Since malloc is **high utilization** component of most program, This would have a hugh impact on overall system performance.
+- For performance improvement, heap manager maintains a series of list called "bins".
+- 5 type of bins : **62 small bins, 63 large bins, 1 unsorted bin, 10 fast bin and 64 tcache bins per thread**.
+- Large, small and unsorted bins --> basic recycling strategy of heap.
+- Fast bins and  tcache bin are optimization that layer on top of these.
+
+```
+    bin[0] = N/A
+    bin[1] = unsorted bin
+    bin[2] - bin[63] = small bin
+    bin[64] - bin[126] = large bin
+```
+
 
