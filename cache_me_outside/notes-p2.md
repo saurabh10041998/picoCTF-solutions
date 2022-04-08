@@ -41,5 +41,12 @@ Even with these checks, attackers can still exploit heap.
     bin[2] - bin[63] = small bin
     bin[64] - bin[126] = large bin
 ```
-
-
+## Chunk recycling : the basic strategy
+- Basic algorithm for free as follows
+```
+1. If M = 1, allocation -> off heap and should be munmaped.
+2. Chunk before this one is free, then chunk is merged backwards to create a bigger free chunk.
+3. Chunk after this one is free, then chunk is merged forwards to create a bigger free chunk.
+4. If this potentially larger chunk borders the "top" of the heap, the whole chunk is absorbed into the end of the heap, rather than stored in a "bin".
+5. Otherwise, chunk is marked as free and placed in an appropriate bin.
+```
