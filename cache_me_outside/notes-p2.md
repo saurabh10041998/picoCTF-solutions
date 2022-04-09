@@ -6,9 +6,9 @@ https://azeria-labs.com/heap-exploitation-part-2-glibc-heap-free-bins/
 ```
 
 ## How does the free work ??
-- Programmer releases memory by call to `free`. When call to free made, job of heap manager to resolve the pointer back to it's corresponding chunk.
+- Programmer releases memory by call to `free`. When call to free made, job of heap manager is to resolve the pointer back to it's corresponding chunk.
 - This is done by subtracting size of chunk metadata from the pointer passed to free.
-- `free` first does a couple of basic checks to see if freed pointer is not invalid. If all these checks fail, it leads to program aborts.
+- `free` first does a couple of basic checks to see if freed pointer is not invalid. If any of these checks fail, it leads to program aborts.
 ```
 1. Allocation is aligned 8/16 bytes boundary. Since malloc ensures the same.
 2. chunk's size isn't impossible - too small, too large, overlap the end of process' address space.
@@ -60,7 +60,7 @@ Even with these checks, attackers can still exploit heap.
 ## Large bins
 - For chunk over 512/1024 bytes, the heap manager uses large bins
 - 63 large bins, operates the same as the small bins but instead of storing the fixed size,  **they instead store chunks within size range**.
-- Each large bin's range is designed not to overlap with either the chunks sizes of small bins or the ranges of the other bins. **In other words, given the chunk size, there is exactly one small bin or large bin that this size corresponds to**.
+- Each large bin's range is designed not to overlap with either the chunks sizes of small bins or the ranges of the other large bins. **In other words, given the chunk size, there is exactly one small bin or large bin that this size corresponds to**.
 - Insertion has to be mannually sorted and allocation from this list requires list traversal. Thus these are inherently slower than the small bins. However
 large bins are used less frequently in the program.
 - **Hypothesis** :- *programs tend to allocate(and thus release) small allocations at a far higher rate than large allocations on an average*
