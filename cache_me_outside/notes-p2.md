@@ -78,4 +78,12 @@ largest of large bin(1) -> freed chunks over  1Mb.
 1. Often frees are clustered together.
 2. free is immediatetly followed by reallocation of similar size of chunk.
 ```
+- For example, program releasing the linked list or tree will release all the allocations for every entry at once..and In linked list, if list wants update entry, it will release the memory of old entry before allocating it for its replacement.
+- Being able to fastly re-return recently freed location, will certainly improve the performance.
+- So based on above observations, heap manaer uses "unsorted bin". 
+- Instead of putting recently freed chunk in correct bins, heap manager coalesces it with neighbors and dumps it general unsorted link list.
+- During malloc, each item in unsorted bins is checked if it "fits" the request. If it does malloc can use it immediately. If it does not then malloc puts it in corresponding small or large bins.
+
+## Fast bins
+
 
