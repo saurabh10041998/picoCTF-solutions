@@ -101,6 +101,16 @@ largest of large bin(1) -> freed chunks over  1Mb.
 - "Consolidation" phase occurs when malloc request is made which is greater than what fastbins can service or `malloc_trim` or `mallocopt` is called.
 
 ## tcache ( per thread cache ) bins
+- Also called as "tcache" allocator
+### Problem analysis
+Each running process in the computer system has one or more threads running. Multiple running threads allow process to execute multiple concurrent opertions. Great example would be web server handling large number of web requests. 
+  Each thread in given process shares the same address space, which is to say, each thread can see the same code and data memory.
+Each thread gets its own registers and stack to store the temporary variable but resources like global variables and heap are shared between all threads
+  Coordinating access to shared resources can be very difficult, and getting it wrong can lead to problems like "race conditions"
+which is kind of hard-debug problem also these faults can be exploitable by hackers.
 
+For example, we maintain the database operation atomic during parallel web request thread access. 
+Very Common way to solve these race conditions is to force simultaneous requests accessing the global resource into sequential queue using mechanism called as "lock".
 
+  
 
