@@ -85,5 +85,22 @@ largest of large bin(1) -> freed chunks over  1Mb.
 - During malloc, each item in unsorted bins is checked if it "fits" the request. If it does malloc can use it immediately. If it does not then malloc puts it in corresponding small or large bins.
 
 ## Fast bins
+- Further optimization layer on top these.
+- Store recently freed small chunks in "fast turnaround queue"
+- This will
+```
+  1. intentionally keep chunk live and unmerged with it's neighbours
+  2. Hence it can be repurposed if malloc request of same chunk size come very soon after chunk is 
+  freed
+```
+- Fixed chunk size bins ( same as small bins ) and 10 fast bins { 16, 24, 32, 40, 48, 56, 64, 72, 80 and 88 bytes+ }
+- Remain **unmerged**. In practice, the way this works is the heap manager does not set P bit at start of next chunk metadata. It's like not "completely" freeing the chunks in fast  bins.
+- Same as small bins, automatically ordered --> insertion and removal of chunks is incredibly fast. Moreover no merging, hence theycan be stored as **singly linked list** instead of doubly linked list and can be removed from the list when chunks are merged.
+- Downside of fast bins, this lead to fragment and balloon over memory. To avoid this, heap manager periodically **consolidates** the heap.
+- This flushes "every" entry in the fast bins. Merges the chunk neighbors and put resultant chunk in unsorted bins for malloc to use.
+- "Consolidation" phase occurs when malloc request is made which is greater than what fastbins can service or `malloc_trim` or `mallocopt` is called.
+
+## tcache ( per thread cache ) bins
+
 
 
