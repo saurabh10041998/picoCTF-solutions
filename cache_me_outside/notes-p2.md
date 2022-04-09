@@ -70,3 +70,12 @@ Smallest large bins -> 64 bytes(512 byte to 576 bytes).
 Second largest -> 256Kb
 largest of large bin(1) -> freed chunks over  1Mb.
 ``` 
+
+## Unsorted bins
+- Layer of optimization added by the heap manager.
+- Optimization is based on following hypothesis
+```
+1. Often frees are clustered together.
+2. free is immediatetly followed by reallocation of similar size of chunk.
+```
+
