@@ -105,12 +105,14 @@ largest of large bin(1) -> freed chunks over  1Mb.
 ### Problem analysis
 Each running process in the computer system has one or more threads running. Multiple running threads allow process to execute multiple concurrent opertions. Great example would be web server handling large number of web requests. 
   Each thread in given process shares the same address space, which is to say, each thread can see the same code and data memory.
-Each thread gets its own registers and stack to store the temporary variable but resources like global variables and heap are shared between all threads
-  Coordinating access to shared resources can be very difficult, and getting it wrong can lead to problems like "race conditions"
-which is kind of hard-debug problem also these faults can be exploitable by hackers.
-
+Each thread gets its own registers and stack to store the temporary variable but resources like global variables and heap are 
+shared between all threads.Coordinating access to shared resources can be very difficult, and getting it wrong can lead to 
+problems like "race conditions" which is kind of hard-debug problem also these faults can be exploitable by hackers.
+```
 For example, we maintain the database operation atomic during parallel web request thread access. 
+```
 Very Common way to solve these race conditions is to force simultaneous requests accessing the global resource into sequential queue using mechanism called as "lock".
+Locks work by marking the one thread that it has "ownership" over global resources then doing the operation on that resources and then marking that resource is no longer  is use. If another thread comes along and wants to use the resource and some other thread is using it, the thread waits until other thread is done. This ensures thatthe global resource is used by one thread at a time. But it comes with cost: *The thread that is waiting on the resources is stalling and wasting time. This is called as "lock contention"*
 
-  
-
+For heap this cost is unacceptible as it will leads to program slowness
+- This problem is solved by using per-thread arenas. + Additionally it maintains per thread t-cache. 
