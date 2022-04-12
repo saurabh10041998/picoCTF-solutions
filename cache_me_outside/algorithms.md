@@ -20,3 +20,16 @@
           from there.  
 
     **5. If all else fails,return NULL**  
+
+## Free strategy
+1. If the pointer is NULL, the C standard defines the behaviour as "do nothing".
+2. Otherwise, convert the pointer back to chunk by subtracting the size of chunk metadata.
+3. Perform a few sanity checks on the chunk, and abort if the sanity checks fail.
+4. If the chunks fit into tcache bin, store it there.
+5. If the chunks has  M bit set, give it back to OS system via munmap.
+6. Otherwise we obtain the heap lock and then:  
+    1. If the chunks fit into a fastbin, put it on the corresponding fast bin and we're done.
+    2. If chunk is > 64MB, consolidate the fast bins immediately and put the resulting merged chunks on the unsorted bin.
+    3. Merge the chunks backwards and forwards with the neighbouring freed chunks in the small,large and unsorted bins.
+    4. If resulting chunk lies at top of the heap, merge it into the top of the heap rather that storing it in a bin.
+    5. Otherwise, store it in unsorted bin.(Malloc will later do the work to put entries from the unsorted bin into the small or large bins)
