@@ -119,9 +119,14 @@ For heap this cost is unacceptible as it will leads to program slowness
 - The tcache  is designed to reduce the cost of "locks"(locks instruction are expensive) and end up significant portion in the fast execution path.
 
 ```
-Per thread caching speeds up the allocations by having per thread bins of small chunks ready to go. That way, when a thread requests a chunk, if the thread has available chunk on its cache, then it can service allocations without ever needing to wait  on heap lock.
+Per thread caching speeds up the allocations by having per thread bins of small chunks ready to go. 
+That way, when a thread requests a chunk, if the thread has available chunk on its cache, 
+then it can service allocations without ever needing to wait  on heap lock.
 ```
 - **64 singly linked list** tcache bins. Each bins contains 7 same-size chunks
 
 ## How do chunks end up in tcache bins ??
-
+- When a chunk is freed, heap manager -> if thee chunk will fit into corresponding tcache bins. Chunks are "in use" and wont be merged with neighbours.
+- if tcache is full, the heap manager will reverts to old strategy of obtaining the lock and processing the chunk. 
+- For a thread, if chunk is available on corresponding tcache bins, then heap returns chunk without ever obtaining the lock.
+- When we acquire heap lock otherwise, we opportunistically promote as many chunks as possible at this size of tcache and then return last matching chunk to user.
