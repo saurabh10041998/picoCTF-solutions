@@ -116,3 +116,12 @@ Locks work by marking the one thread that it has "ownership" over global resourc
 
 For heap this cost is unacceptible as it will leads to program slowness
 - This problem is solved by using per-thread arenas. + Additionally it maintains per thread t-cache. 
+- The tcache  is designed to reduce the cost of "locks"(locks instruction are expensive) and end up significant portion in the fast execution path.
+
+```
+Per thread caching speeds up the allocations by having per thread bins of small chunks ready to go. That way, when a thread requests a chunk, if the thread has available chunk on its cache, then it can service allocations without ever needing to wait  on heap lock.
+```
+- **64 singly linked list** tcache bins. Each bins contains 7 same-size chunks
+
+## How do chunks end up in tcache bins ??
+
