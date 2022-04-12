@@ -1,14 +1,14 @@
 ## Allocation algorithm
 1. If the size corresponds with a tcache bin and tcache chunk available, return that immediately.
 2. If the request is enormus allocate a chunk off-heap via mmap
-3. Otherwise we obtain arena heap lock and then perform following strategies, in order:
+3. Otherwise we obtain arena heap lock and then perform following strategies, in order:  
     **1. Try the fastbins/smallbin recycling strategy**
         - If a correspoding fast bin exists, find a chunk from there.(and also oppotunistically prefill the tcache with entries from fast bin).
         - Otherwise, if corresponding small bin exists, allocate from there(opportunistically prefilling the tcache as we can go).
     
     **2. Resolve all deferred frees**
         - Otherwise "truly free" the entries in the fast bins and move their consolidated chunks to unsorted bin.
-        - Go through each entry in the unsorted bins, if it is suitable, stop. Otherwise, put the unsorted entry into its corresponding small/large bin as we go (possib          ly promoting small entries to tcache as we go).
+        - Go through each entry in the unsorted bins, if it is suitable, stop. Otherwise, put the unsorted entry into its corresponding small/large bin as we go (possibly promoting small entries to tcache as we go).
     
     **3. Default back to basic recycling stratagy** 
         - If the chunks size corresponds with a large bin, search the corresponding large bin now.
