@@ -8,6 +8,12 @@ ld = ELF("./ld-2.27.so")
 
 context.binary = exe
 
+"""
+    To run locally: ./solve.py LOCAL
+    To run and attach gdb: ./solve.py DEBUG
+    To run remotely: ./solve.py
+
+"""
 
 def conn():
     if args.LOCAL:
